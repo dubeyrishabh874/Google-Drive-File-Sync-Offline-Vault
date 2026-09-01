@@ -1,0 +1,6 @@
+{
+  "name": "Google Drive File Sync & Offline Vault",
+  "description": "Minimalist local-first file uploader and categorized sync client for Google Drive with encrypted offline storage and real-time sync status.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -65,16 +65,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { key: 'media', label: 'Media & Audio', icon: Film },
   ];
 
+  const [isAuthenticating, setIsAuthenticating] = React.useState(false);
+
   const handleCategoryClick = (key: FileCategory | 'all') => {
     onSelectCategory(key);
     if (onCloseMobileSidebar) onCloseMobileSidebar();
   };
 
   const handleAuth = async () => {
-    if (user) {
-      await logout();
-    } else {
-      await googleSignIn();
+    if (isAuthenticating) return;
+    setIsAuthenticating(true);
+    try {
+      if (user) {
+        await logout();
+      } else {
+        await googleSignIn();
+      }
+    } catch (err) {
+      console.warn('Authentication handled:', err);
+    } finally {
+      setIsAuthenticating(false);
     }
   };
 
@@ -128,10 +138,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           <button
             onClick={handleAuth}
-            className="w-full flex items-center justify-center gap-2 bg-[#F9F9F9] hover:bg-[#F0F0F0] p-2.5 rounded-lg border border-[#E5E5E5] text-xs font-medium text-[#1A1A1A] transition-colors"
+            disabled={isAuthenticating}
+            className="w-full flex items-center justify-center gap-2 bg-[#F9F9F9] hover:bg-[#F0F0F0] disabled:opacity-50 p-2.5 rounded-lg border border-[#E5E5E5] text-xs font-medium text-[#1A1A1A] transition-colors"
           >
-            <LogIn className="w-3.5 h-3.5" />
-            <span>Connect Google Drive</span>
+            {isAuthenticating ? (
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <LogIn className="w-3.5 h-3.5" />
+            )}
+            <span>{isAuthenticating ? 'Connecting...' : 'Connect Google Drive'}</span>
           </button>
         )}
       </div>
